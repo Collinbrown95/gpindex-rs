@@ -16,4 +16,6 @@ NULL
 
 r_average <- function(data) .Call(wrap__r_average, data)
 
+r_geo_mean <- function(data) .Call(wrap__r_geo_mean, data)
+
 # nolint end
