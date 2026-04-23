@@ -1,0 +1,17 @@
+{
+  "name": "Rust-Python-R-Bindings",
+  "image": "ghcr.io/rocker-org/devcontainer/tidyverse:4",
+  "features": {
+    "ghcr.io/devcontainers/features/rust:1": {},
+    "ghcr.io/devcontainers/features/python:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "ms-python.python",
+        "REditorSupport.r"
+      ]
+    }
+  }
+}
