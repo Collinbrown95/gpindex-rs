@@ -1,6 +1,6 @@
 use pyo3::prelude::*;
 use numpy::PyReadonlyArray1;
-use core_logic::{arithmetic_mean, geometric_mean};
+use core_logic::means::{arithmetic_mean, geometric_mean};
 
 #[pyfunction]
 fn average(data: PyReadonlyArray1<f64>) -> f64 {
