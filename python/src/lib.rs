@@ -1,7 +1,7 @@
 use pyo3::prelude::*;
-use numpy::PyReadonlyArray1;
+use numpy::{PyReadonlyArray1, IntoPyArray};
 use core_logic::means::{arithmetic_mean, geometric_mean};
-use core_logic::elementary_indexes::{carli_index, jevons_index};
+use core_logic::elementary_indexes::{carli_index, jevons_index, elementary_index};
 
 // ==========================================================
 // MEANS MODULE
@@ -35,6 +35,20 @@ fn py_jevons_index(p1: PyReadonlyArray1<f64>, p0: PyReadonlyArray1<f64>) -> f64 
     jevons_index(p1.as_array(), p0.as_array())
 }
 
+#[pyfunction]
+#[pyo3(name = "elementary_index")]
+fn py_elementary_index(
+    py: Python<'_>, 
+    p1: PyReadonlyArray1<f64>, 
+    p0: PyReadonlyArray1<f64>
+) -> PyResult<PyObject> {
+    // 1. Call your core logic
+    let res_array = elementary_index(p1.as_array(), p0.as_array(), "jevons");
+
+    // 2. Convert to a generic Python Object
+    // .to_object(py) handles the conversion from the NumPy type
+    Ok(res_array.into_pyarray(py).to_object(py))
+}
 // ==========================================================
 // MAIN MODULE
 // ==========================================================
@@ -56,5 +70,7 @@ fn pygpindex(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
     let elementary_indexes_submodule = PyModule::new(_py, "elementary_indexes")?;
     elementary_indexes_submodule.add_function(wrap_pyfunction!(py_carli_index, elementary_indexes_submodule)?)?;
     elementary_indexes_submodule.add_function(wrap_pyfunction!(py_jevons_index, elementary_indexes_submodule)?)?;
+    elementary_indexes_submodule.add_function(wrap_pyfunction!(py_elementary_index, elementary_indexes_submodule)?)?;
+    m.add_submodule(elementary_indexes_submodule)?;
     Ok(())
 }
