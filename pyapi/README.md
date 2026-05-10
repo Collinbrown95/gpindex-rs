@@ -15,7 +15,6 @@ Working with data in another ecosystem (e.g., Pandas, Numpy), expose a collectio
 ```python
 # outliers.py
 from pyas.outlier_detection import robust_z
-
 OUTLIER_MASK = robust_z(df['relatives'])
 df = df[OUTLIER_MASK]
 
