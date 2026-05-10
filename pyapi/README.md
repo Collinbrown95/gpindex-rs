@@ -1,7 +1,5 @@
 # Version 2 API Design
 
-**Purpose**: The purpose of this folder is to iterate quickly and figure out the user-facing API using Python.
-
 # UML Diagram
 
 ![Pyas 2.0 UML Diagram](./docs/api-v2.drawio.svg)
