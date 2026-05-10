@@ -1,10 +1,11 @@
-from typing import Tuple
+from typing import Self
 
 import numpy as np
 import xarray as xr
 import pandas as pd
 
 from .means import generalized_mean
+from .aggregation_structure import AggregationStructure
 
 class PriceIndex:
 
@@ -24,6 +25,30 @@ class PriceIndex:
     
     def __len__(self):
         return len(self._index)
+    
+    def aggregate(self, pias: AggregationStructure, na_rm: bool = False) -> Self:
+        # Temporary implementation just to figure out the ideal interfaces
+        df = self._index.to_pandas()
+        agg_levels = []
+        for level in pias.levels:
+            tmp = df.merge(
+                pias[['business', level, 'weight']],
+                how='left',
+                left_on=df.index,
+                right_on='business',
+            )
+            tmp = tmp[self._index.attrs['periods'].tolist() + [level] + ['weight']]
+            tmp = tmp.groupby(level).apply(_get_weighted_average).reset_index().rename(columns={'business': 'levels'})
+            agg_levels.append(tmp)
+        agg_levels.append(
+            self._index.to_pandas().reset_index()[['business'] + self._index.attrs['periods'].tolist()].rename(columns={'business': 'levels'})
+        )
+        index = pd.concat(agg_levels)
+        # Fix levels column
+        index['levels'] = index[['levels'] + pias.levels].bfill(axis=1).iloc[:, 0]
+        index = index[['levels'] + self._index.periods.tolist()]
+        new_idx = PriceIndex(index)
+        return new_idx
 
 
 def elementary_index_from_pd(
@@ -58,3 +83,12 @@ def elementary_index_from_pd(
     elementals.attrs['businesses'] = u_b
 
     return PriceIndex(elementals)
+
+
+def _get_weighted_average(group):
+    cols = group.columns.difference(['weight'])
+    weighted_values = group[cols].multiply(group['weight'], axis=0)
+
+    valid_weights = group[cols].notnull().multiply(group['weight'], axis=0)
+
+    return weighted_values.sum() / valid_weights.sum()

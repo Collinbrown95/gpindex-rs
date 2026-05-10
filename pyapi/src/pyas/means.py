@@ -47,7 +47,6 @@ def generalized_mean(
                 return np.sum(x * w) / np.sum(w)
             else:
                 return (np.sum(x ** order * w) / np.sum(w))^(1/r)
-        return x
     return enclosed(x, weights, na_rm)
 
 
