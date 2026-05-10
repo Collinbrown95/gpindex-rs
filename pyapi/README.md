@@ -68,3 +68,63 @@ outputs = indexes.to_pandas()
 # Anything downstream of here happens in other well-known ecosystem tools like Pandas.
 outputs.to_csv("index_outputs.csv")
 ```
+
+## Interactive Use
+
+The `PriceIndex` and `AggregationStructure` classes pass accessor operations to their underlying data structures, so they can be "indexed into" like regular dataframes or arrays. They can also possess class specific members like `pias.levels` for convenience.
+
+```python
+>> indexes = elementals.aggregate(pias)
+
+>> type(indexes)
+
+<class 'pyas.price_index.PriceIndex'>
+
+>> type(pias)
+
+<class 'pyas.aggregation_structure.AggregationStructure'>
+
+>> indexes
+
+  levels  202001    202002    202003    202004
+0      1     1.0  1.300724  0.803571  3.040519
+0     11     1.0  1.300724  0.803571  2.043392
+1     12     NaN       NaN       NaN  4.576286
+0     B1     1.0  0.894910  0.334294       NaN
+1     B2     1.0       NaN       NaN  2.770456
+2     B3     1.0  2.020004  1.635335  0.537996
+3     B4     NaN       NaN       NaN  4.576286
+
+>> indexes.loc[:, '202003']
+
+0    0.803571
+0    0.803571
+1         NaN
+0    0.334294
+1         NaN
+2    1.635335
+3         NaN
+Name: 202003, dtype: float64
+
+>> pias
+
+  business  classification  weight level1 level2
+0       B1              11     553      1     11
+1       B2              11     646      1     11
+2       B3              11     312      1     11
+3       B4              12     622      1     12
+4       B5              12     330      1     12
+
+>> pias.levels
+
+['level1', 'level2']
+
+>> pias[pias.levels]
+
+  level1 level2
+0      1     11
+1      1     11
+2      1     11
+3      1     12
+4      1     12
+```
