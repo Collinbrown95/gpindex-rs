@@ -1,12 +1,14 @@
-import pandas as pd
+# Version 2 API Design
 
-from pyas import elementary_index_from_pd, PriceIndex, AggregationStructure
-from pyas.helpers import price_relatives
+**Purpose**: The purpose of this folder is to iterate quickly and figure out the user-facing API using Python.
 
-# Users set up input data using whatever tools they see fit.
-df = pd.read_csv("./pyapi/data/ms_prices.csv")
-pias_df = pd.read_csv("./pyapi/data/ms_weights.csv")
+## UML Diagram
 
+![Pyas 2.0 UML Diagram](./docs/api-v2.drawio.svg)
+
+## Example Usage
+
+```python
 # --------------
 # Pyas scope start
 # --------------
@@ -31,3 +33,4 @@ outputs = indexes.to_pandas()
 
 # Anything downstream of here happens in other well-known ecosystem tools
 outputs.to_csv("index_outputs.csv")
+```
